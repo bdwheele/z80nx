@@ -5,36 +5,30 @@ import sys
 import termios
 import tty
 
+
+from .terminal import Terminal
 from z80 import Z80Machine
 
-
-
-
-class Z80nx:
-    def __init__(self):
+class System:
+    def __init__(self, romfile: str="system.rom"):
         self.m = Z80Machine()
         self.m.set_input_callback(lambda port: self.handle_input(port))
         self.m.set_output_callback(lambda port, value: self.handle_output(port, value))
-        self.load_rom("system.rom")
+        self.load_rom(romfile)
         self.memory_reset()
         self.disk = 0
         self.track = 0
         self.sector = 1
         self.dma = 0
-
-        # test scaffold
-        self.original_terminal = termios.tcgetattr(sys.stdin.fileno())
-        tty.setraw(sys.stdin.fileno())
-
         self.disks = [None, None, None]
-        
-
-
+        self.terminal = Terminal()
 
     def run(self):
         logging.debug("Starting emulation")
+        self.terminal.raw_mode()
         while not self.m.halted:
             self.m.run()
+        self.terminal.cooked_mode()
         logging.debug(f"Ended emulation: {self.m.pc:04x}, {self.m.pc}")
 
     def handle_input(self, port: int) -> int:
@@ -71,9 +65,6 @@ class Z80nx:
                 self.m.a = ord(x)
                 if self.m.a == 0x03:
                     print("CTRL-C")
-                    termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, self.original_terminal)
-                    #tty.setraw(sys.stdin.fileno(), )
-                    #return
                     self.m.halted = True
             case 4:
                 # console write
@@ -95,7 +86,8 @@ class Z80nx:
             case 9:
                 # select disk
                 dsk = self.m.c
-                if dsk < 0 or dsk > len(self.disks) -1 or self.disks[dsk] is None:
+                print("Seldisk", dsk)
+                if dsk < 0 or dsk > 2 or self.disks[dsk] is None:
                     self.m.hl = 0
                 else:
                     self.drive = dsk
@@ -112,11 +104,11 @@ class Z80nx:
                 self.dma = self.m.bc
             case 13:
                 # read block
-                self.disks[self.disk].read()
+                self.m.a = self.disks[self.disk].read()
                 pass
             case 14:
                 # write block
-                self.disks[self.disk].write()
+                self.m.a = self.disks[self.disk].write()
                 pass
             case 15:
                 # list status
