@@ -10,7 +10,7 @@
  *  Last modification  1-18-87 by cdk
  *  This assembler is modeled after the Intel 8080 macro cross-assembler
  *  for the Intel 8080 by Ken Borgendale.  The major features are:
- *	1.  Full macro capabilities
+ *	1.  Full macro capabilitieshttps://48k.ca/zmac.zip
  *	2.  Conditional assembly
  *	3.  A very flexible set of listing options and pseudo-ops
  *	4.  Symbol table output
@@ -733,7 +733,8 @@ void putout(int value);
 int outrec;
 int outlen;
 unsigned char outbuf[1024 * 1024];
-void bookmark();
+//void bookmark();
+void bookmark(int delay);
 void listfrombookmark();
 
 
@@ -5820,7 +5821,8 @@ int nextchar()
 {
 	int c, ch;
 	unsigned char *p;
-	char *getlocal();
+	//char *getlocal();
+	char *getlocal(int c, int n);
 
 	if (peekc != NOPEEK) {
 		c = peekc;
