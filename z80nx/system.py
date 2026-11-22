@@ -86,11 +86,11 @@ class System:
             case 9:
                 # select disk
                 dsk = self.m.c
-                print("Seldisk", dsk)
+                #print("Seldisk", dsk)
                 if dsk < 0 or dsk > 2 or self.disks[dsk] is None:
                     self.m.hl = 0
                 else:
-                    self.drive = dsk
+                    self.disk = dsk
                     # TODO: if bit zero of E is 0 then it's a new disk, otherwise it's been seen before...
                     self.m.hl = self.dpbase + dsk * 16
             case 10:

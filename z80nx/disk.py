@@ -23,7 +23,7 @@ class Disk:
 
     def get_lbn_from_dts(self):
         "Return the LBN from the BIOS disk parameter table"
-        dpb_addr = self.system.mem_read_word(self.system.dpbase + self.system.drive * 16 + 10)
+        dpb_addr = self.system.mem_read_word(self.system.dpbase + self.system.disk * 16 + 10)
         track_len = self.system.mem_read_word(dpb_addr)
         lbn = track_len * self.system.track + self.system.sector
         return lbn
@@ -50,10 +50,13 @@ class DiskHardware(Disk):
 class DiskFile(Disk):
     def __init__(self, system: System, config: dict):
         self.system = system
+        self.filename = config['file']
         self.fd = open(config['file'], "r+b")
-
+        #print(f'Opening disk file {config["file"]} for fd {self.fd}')
+    
     def read(self):
         offset = self.get_lbn_from_dts() * 128
+        #print(f"Reading {self.filename}@{offset}, {self.system.disk}")
         self.fd.seek(offset, os.SEEK_SET)
         self.system.m.set_memory_block(self.system.dma, self.fd.read(128))
         return 0
@@ -64,7 +67,9 @@ class DiskFile(Disk):
         for i in range(128):
             sec.append(self.system.m.memory[self.system.dma + i])
         offset = self.get_lbn_from_dts() * 128
+        #print(f"Writing {self.filename}@{offset}, {self.system.disk}")
         self.fd.seek(offset, os.SEEK_SET)
         self.fd.write(sec)
+        self.fd.flush()
         return 0
 
