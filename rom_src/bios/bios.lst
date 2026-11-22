@@ -64,226 +64,224 @@
   64:  248+17	0046' CD7000  	    call CONOUTE
   65:  265+12	0049' 18F5    	    jr hello
   66:				
-  67:				
-  68:				
-  69:				; Warm boot on application exit.
-  70:     -	004B'         	WBOOTE:
-  71:				    ; tell the emulator to reload the CCP/BDOS/BIOS image into
-  72:				    ; memory from other storage.  On initial startup, it will get loaded 
-  73:				    ; by the emulator and then we fall through from BOOTE and load
-  74:				    ; it again. Inefficient, but not really worried.  On warm boot the
-  75:				    ; image gets loaded on top the existing one so it's not a problem
-  76:				    ; if it's exactly the same.  Could be interesting if it isnt.
-  77:				    ; This also will initialize the Disk Parameter Tables based on the
-  78:				    ; configuraiton of the emulator
-  79:  277+11	004B' D301    	    out (1), a
-  80:				
-  81:				    ; set things up to call the CCP
-  82:  288+7	004D' 3EC3    	    ld a, 0xc3
-  83:  295+10	004F' 210300  	    ld hl, BBASE + 3         ; init BIOS entrypoint
-  84:  305+13	0052' 320000  	    ld (0x0000), a
-  85:  318+16	0055' 220100  	    ld (0x0001), hl
-  86:				
-  87:  334+10	0058' 210600  	    ld hl, FBASE + 6         ; init BDOS entrypoint
-  88:  344+13	005B' 320500  	    ld (0x0005), a
-  89:  357+16	005E' 220600  	    ld (0x0006), hl
-  90:				
-  91:  373+13	0061' 3A0300  	    ld a, (CDISK)            ; current selected disk
-  92:  386+4	0064' 4F      	    ld c, a
-  93:  390+10	0065' C30000  	    jp CBASE                 ; pass control to CCP
-  94:				
-  95:				; The rest of the BIOS calls all just call the emulator and return
-  96:				; this macro simplifies it.
-  97:				call_em macro FN
-  98:					out (FN), a
-  99:					or a
- 100:					ret
- 101:				    endm
- 102:				
- 103:     -	0068'         	CONSTE:
- 104:     -	0068'         	    call_em(2)
- 104:  400+11	0068' D302    		out ((2)), a
- 104:  411+4	006A' B7      		or a
- 104:  415+10	006B' C9      		ret
- 104:     -	006C'         	    endm
- 105:				
- 106:     -	006C'         	CONINE:
- 107:     -	006C'         	    call_em(3)
- 107:  425+11	006C' D303    		out ((3)), a
- 107:  436+4	006E' B7      		or a
- 107:  440+10	006F' C9      		ret
- 107:     -	0070'         	    endm
- 108:				
- 109:     -	0070'         	CONOUTE:
- 110:     -	0070'         	    call_em(4)
- 110:  450+11	0070' D304    		out ((4)), a
- 110:  461+4	0072' B7      		or a
- 110:  465+10	0073' C9      		ret
- 110:     -	0074'         	    endm
- 111:				
- 112:     -	0074'         	LISTE:
- 113:     -	0074'         	    call_em(5)
- 113:  475+11	0074' D305    		out ((5)), a
- 113:  486+4	0076' B7      		or a
- 113:  490+10	0077' C9      		ret
- 113:     -	0078'         	    endm
- 114:				
- 115:     -	0078'         	PUNCHE:
- 116:     -	0078'         	    call_em(6)
- 116:  500+11	0078' D306    		out ((6)), a
- 116:  511+4	007A' B7      		or a
- 116:  515+10	007B' C9      		ret
- 116:     -	007C'         	    endm
- 117:				
- 118:     -	007C'         	READERE:
- 119:     -	007C'         	    call_em(7)
- 119:  525+11	007C' D307    		out ((7)), a
- 119:  536+4	007E' B7      		or a
- 119:  540+10	007F' C9      		ret
- 119:     -	0080'         	    endm
- 120:				
- 121:     -	0080'         	HOMEE:
- 122:     -	0080'         	    call_em(8)
- 122:  550+11	0080' D308    		out ((8)), a
- 122:  561+4	0082' B7      		or a
- 122:  565+10	0083' C9      		ret
- 122:     -	0084'         	    endm
- 123:				
- 124:     -	0084'         	SELDSKE:
- 125:     -	0084'         	    call_em(9)
- 125:  575+11	0084' D309    		out ((9)), a
- 125:  586+4	0086' B7      		or a
- 125:  590+10	0087' C9      		ret
- 125:     -	0088'         	    endm
- 126:				
- 127:     -	0088'         	SETTRKE:
- 128:     -	0088'         	    call_em(10)
- 128:  600+11	0088' D30A    		out ((10)), a
- 128:  611+4	008A' B7      		or a
- 128:  615+10	008B' C9      		ret
- 128:     -	008C'         	    endm
- 129:				
- 130:     -	008C'         	SETSECE:
- 131:     -	008C'         	    call_em(11)
- 131:  625+11	008C' D30B    		out ((11)), a
- 131:  636+4	008E' B7      		or a
- 131:  640+10	008F' C9      		ret
- 131:     -	0090'         	    endm
- 132:				
- 133:     -	0090'         	SETDMAE:
- 134:     -	0090'         	    call_em(12)
- 134:  650+11	0090' D30C    		out ((12)), a
- 134:  661+4	0092' B7      		or a
- 134:  665+10	0093' C9      		ret
- 134:     -	0094'         	    endm
- 135:				
- 136:     -	0094'         	READE:
- 137:     -	0094'         	    call_em(13)
- 137:  675+11	0094' D30D    		out ((13)), a
- 137:  686+4	0096' B7      		or a
- 137:  690+10	0097' C9      		ret
- 137:     -	0098'         	    endm
- 138:				
- 139:     -	0098'         	WRITEE:
- 140:     -	0098'         	    call_em(14)
- 140:  700+11	0098' D30E    		out ((14)), a
- 140:  711+4	009A' B7      		or a
- 140:  715+10	009B' C9      		ret
- 140:     -	009C'         	    endm
- 141:				
- 142:     -	009C'         	LISTSTE:
- 143:     -	009C'         	    call_em(15)
- 143:  725+11	009C' D30F    		out ((15)), a
- 143:  736+4	009E' B7      		or a
- 143:  740+10	009F' C9      		ret
- 143:     -	00A0'         	    endm
- 144:				
- 145:     -	00A0'         	SECTRANE:
- 146:     -	00A0'         	    call_em(16)
- 146:  750+11	00A0' D310    		out ((16)), a
- 146:  761+4	00A2' B7      		or a
- 146:  765+10	00A3' C9      		ret
- 146:     -	00A4'         	    endm
- 147:				
- 148:				    ; DPBASE is the start of the Disk Parameter Header.  It's public because
- 149:				    ; the emulator may need to touch it or some of the things it refers to.
- 150:				
- 151:				    public DPBASE
- 152:     -	00A4'         	DPBASE:
- 153:     -	00A4'         	drive_a_dph:
- 154:     -	00A4' 0000    	    dw 0            ; Sector translation vector
- 155:     -	00A6' 00000000	    dw 0, 0, 0      ; BDOS scratchpad
+  67:				; Warm boot on application exit.
+  68:     -	004B'         	WBOOTE:
+  69:				    ; tell the emulator to reload the CCP/BDOS/BIOS image into
+  70:				    ; memory from other storage.  On initial startup, it will get loaded 
+  71:				    ; by the emulator and then we fall through from BOOTE and load
+  72:				    ; it again. Inefficient, but not really worried.  On warm boot the
+  73:				    ; image gets loaded on top the existing one so it's not a problem
+  74:				    ; if it's exactly the same.  Could be interesting if it isnt.
+  75:				    ; This also will initialize the Disk Parameter Tables based on the
+  76:				    ; configuraiton of the emulator
+  77:  277+11	004B' D301    	    out (1), a
+  78:				
+  79:				    ; set things up to call the CCP
+  80:  288+7	004D' 3EC3    	    ld a, 0xc3
+  81:  295+10	004F' 210300  	    ld hl, BBASE + 3         ; init BIOS entrypoint
+  82:  305+13	0052' 320000  	    ld (0x0000), a
+  83:  318+16	0055' 220100  	    ld (0x0001), hl
+  84:				
+  85:  334+10	0058' 210600  	    ld hl, FBASE + 6         ; init BDOS entrypoint
+  86:  344+13	005B' 320500  	    ld (0x0005), a
+  87:  357+16	005E' 220600  	    ld (0x0006), hl
+  88:				
+  89:  373+13	0061' 3A0300  	    ld a, (CDISK)            ; current selected disk
+  90:  386+4	0064' 4F      	    ld c, a
+  91:  390+10	0065' C30000  	    jp CBASE                 ; pass control to CCP
+  92:				
+  93:				; The rest of the BIOS calls all just call the emulator and return
+  94:				; this macro simplifies it.
+  95:				call_em macro FN
+  96:					out (FN), a
+  97:					or a
+  98:					ret
+  99:				    endm
+ 100:				
+ 101:     -	0068'         	CONSTE:
+ 102:     -	0068'         	    call_em(2)
+ 102:  400+11	0068' D302    		out ((2)), a
+ 102:  411+4	006A' B7      		or a
+ 102:  415+10	006B' C9      		ret
+ 102:     -	006C'         	    endm
+ 103:				
+ 104:     -	006C'         	CONINE:
+ 105:     -	006C'         	    call_em(3)
+ 105:  425+11	006C' D303    		out ((3)), a
+ 105:  436+4	006E' B7      		or a
+ 105:  440+10	006F' C9      		ret
+ 105:     -	0070'         	    endm
+ 106:				
+ 107:     -	0070'         	CONOUTE:
+ 108:     -	0070'         	    call_em(4)
+ 108:  450+11	0070' D304    		out ((4)), a
+ 108:  461+4	0072' B7      		or a
+ 108:  465+10	0073' C9      		ret
+ 108:     -	0074'         	    endm
+ 109:				
+ 110:     -	0074'         	LISTE:
+ 111:     -	0074'         	    call_em(5)
+ 111:  475+11	0074' D305    		out ((5)), a
+ 111:  486+4	0076' B7      		or a
+ 111:  490+10	0077' C9      		ret
+ 111:     -	0078'         	    endm
+ 112:				
+ 113:     -	0078'         	PUNCHE:
+ 114:     -	0078'         	    call_em(6)
+ 114:  500+11	0078' D306    		out ((6)), a
+ 114:  511+4	007A' B7      		or a
+ 114:  515+10	007B' C9      		ret
+ 114:     -	007C'         	    endm
+ 115:				
+ 116:     -	007C'         	READERE:
+ 117:     -	007C'         	    call_em(7)
+ 117:  525+11	007C' D307    		out ((7)), a
+ 117:  536+4	007E' B7      		or a
+ 117:  540+10	007F' C9      		ret
+ 117:     -	0080'         	    endm
+ 118:				
+ 119:     -	0080'         	HOMEE:
+ 120:     -	0080'         	    call_em(8)
+ 120:  550+11	0080' D308    		out ((8)), a
+ 120:  561+4	0082' B7      		or a
+ 120:  565+10	0083' C9      		ret
+ 120:     -	0084'         	    endm
+ 121:				
+ 122:     -	0084'         	SELDSKE:
+ 123:     -	0084'         	    call_em(9)
+ 123:  575+11	0084' D309    		out ((9)), a
+ 123:  586+4	0086' B7      		or a
+ 123:  590+10	0087' C9      		ret
+ 123:     -	0088'         	    endm
+ 124:				
+ 125:     -	0088'         	SETTRKE:
+ 126:     -	0088'         	    call_em(10)
+ 126:  600+11	0088' D30A    		out ((10)), a
+ 126:  611+4	008A' B7      		or a
+ 126:  615+10	008B' C9      		ret
+ 126:     -	008C'         	    endm
+ 127:				
+ 128:     -	008C'         	SETSECE:
+ 129:     -	008C'         	    call_em(11)
+ 129:  625+11	008C' D30B    		out ((11)), a
+ 129:  636+4	008E' B7      		or a
+ 129:  640+10	008F' C9      		ret
+ 129:     -	0090'         	    endm
+ 130:				
+ 131:     -	0090'         	SETDMAE:
+ 132:     -	0090'         	    call_em(12)
+ 132:  650+11	0090' D30C    		out ((12)), a
+ 132:  661+4	0092' B7      		or a
+ 132:  665+10	0093' C9      		ret
+ 132:     -	0094'         	    endm
+ 133:				
+ 134:     -	0094'         	READE:
+ 135:     -	0094'         	    call_em(13)
+ 135:  675+11	0094' D30D    		out ((13)), a
+ 135:  686+4	0096' B7      		or a
+ 135:  690+10	0097' C9      		ret
+ 135:     -	0098'         	    endm
+ 136:				
+ 137:     -	0098'         	WRITEE:
+ 138:     -	0098'         	    call_em(14)
+ 138:  700+11	0098' D30E    		out ((14)), a
+ 138:  711+4	009A' B7      		or a
+ 138:  715+10	009B' C9      		ret
+ 138:     -	009C'         	    endm
+ 139:				
+ 140:     -	009C'         	LISTSTE:
+ 141:     -	009C'         	    call_em(15)
+ 141:  725+11	009C' D30F    		out ((15)), a
+ 141:  736+4	009E' B7      		or a
+ 141:  740+10	009F' C9      		ret
+ 141:     -	00A0'         	    endm
+ 142:				
+ 143:     -	00A0'         	SECTRANE:
+ 144:     -	00A0'         	    call_em(16)
+ 144:  750+11	00A0' D310    		out ((16)), a
+ 144:  761+4	00A2' B7      		or a
+ 144:  765+10	00A3' C9      		ret
+ 144:     -	00A4'         	    endm
+ 145:				
+ 146:				    ; DPBASE is the start of the Disk Parameter Header.  It's public because
+ 147:				    ; the emulator may need to touch it or some of the things it refers to.
+ 148:				
+ 149:				    public DPBASE
+ 150:     -	00A4'         	DPBASE:
+ 151:     -	00A4'         	drive_a_dph:
+ 152:     -	00A4' 0000    	    dw 0            ; Sector translation vector
+ 153:     -	00A6' 00000000	    dw 0, 0, 0      ; BDOS scratchpad
 	              0000
- 156:     -	00AC' E602    	    dw dirbuf       ; Directory scratchpad
- 157:     -	00AE' D400    	    dw fd1440k      ; Drive parameter block
- 158:     -	00B0' A602    	    dw drive_a_check_vector ; Disk change check vector
- 159:     -	00B2' F200    	    dw drive_a_bitmap ; Allocation bitmap
- 160:     -	00B4'         	drive_b_dph:
- 161:     -	00B4' 0000    	    dw 0            ; Sector translation vector
- 162:     -	00B6' 00000000	    dw 0, 0, 0      ; BDOS scratchpad
+ 154:     -	00AC' E602    	    dw dirbuf       ; Directory scratchpad
+ 155:     -	00AE' D400    	    dw fd1440k      ; Drive parameter block
+ 156:     -	00B0' A602    	    dw drive_a_check_vector ; Disk change check vector
+ 157:     -	00B2' F200    	    dw drive_a_bitmap ; Allocation bitmap
+ 158:     -	00B4'         	drive_b_dph:
+ 159:     -	00B4' 0000    	    dw 0            ; Sector translation vector
+ 160:     -	00B6' 00000000	    dw 0, 0, 0      ; BDOS scratchpad
 	              0000
- 163:     -	00BC' E602    	    dw dirbuf       ; Directory scratchpad
- 164:     -	00BE' D400    	    dw fd1440k      ; Drive parameter block
- 165:     -	00C0' C602    	    dw drive_b_check_vector ; Disk change check vector
- 166:     -	00C2' 4C01    	    dw drive_b_bitmap ; Allocation bitmap
- 167:     -	00C4'         	drive_c_dph:
- 168:     -	00C4' 0000    	    dw 0            ; Sector translation vector
- 169:     -	00C6' 00000000	    dw 0, 0, 0      ; BDOS scratchpad
+ 161:     -	00BC' E602    	    dw dirbuf       ; Directory scratchpad
+ 162:     -	00BE' D400    	    dw fd1440k      ; Drive parameter block
+ 163:     -	00C0' C602    	    dw drive_b_check_vector ; Disk change check vector
+ 164:     -	00C2' 4C01    	    dw drive_b_bitmap ; Allocation bitmap
+ 165:     -	00C4'         	drive_c_dph:
+ 166:     -	00C4' 0000    	    dw 0            ; Sector translation vector
+ 167:     -	00C6' 00000000	    dw 0, 0, 0      ; BDOS scratchpad
 	              0000
- 170:     -	00CC' E602    	    dw dirbuf       ; Directory scratchpad
- 171:     -	00CE' E300    	    dw hd32m        ; Drive parameter block
- 172:     -	00D0' 0000    	    dw 0            ; Disk change check vector: none as this is a fixed disk
- 173:     -	00D2' A601    	    dw drive_c_bitmap ; Allocation bitmap
- 174:				
- 175:     -	05A0'         	FD1440_SIZE = 1440 ; kb
- 176:     -	02D0'         	FD1440_BLOCKS = FD1440_SIZE / 2 ; 2kB blocks, no reserved tracks
- 177:     -	00D4'         	fd1440k:            ; disk parameter block for a 1.44M floppy
- 178:     -	00D4' 4800    	    dw 18*4         ; Number of CP/M sectors per track
- 179:     -	00D6' 040F    	    db 4, 15        ; BSH/BLM for 2048-byte blocks
- 180:     -	00D8' 00      	    db 0            ; EXM for 2048-byte allocation units and >255 blocks
- 181:     -	00D9' CF02    	    dw FD1440_BLOCKS-1 ; DSM
- 182:     -	00DB' 7F00    	    dw 127          ; DRM, one fewer than the number of directory entries
- 183:     -	00DD' C000    	    db 0xc0, 0x00   ; Initial allocation vector for two directory blocks
- 184:     -	00DF' 2000    	    dw 32           ; Size of disk change check vector: (DRM+1)/4
- 185:     -	00E1' 0000    	    dw 0            ; Number of reserved tracks
- 186:				
- 187:     -	8000'         	HD32M_SIZE = 32*1024             ; kB; this is the *maximum* size
- 188:     -	0800'         	HD32M_BLOCKS = HD32M_SIZE / 16 ; 16kB blocks, no reserved tracks
- 189:     -	00E3'         	hd32m:
- 190:				    ;dw 256*4        ; Number of CP/M sectors per track
- 191:     -	00E3' 4000    	    dw 64           ; Number of CP/M sectors per track
- 192:     -	00E5' 077F    	    db 7, 127       ; BSH/BLM for 16384-byte blocks
- 193:     -	00E7' 07      	    db 7            ; EXM for 16384-byte allocation units and >255 blocks
- 194:     -	00E8' FF07    	    dw HD32M_BLOCKS-1 ; DSM
- 195:     -	00EA' FF01    	    dw 511          ; DRM, one fewer than the number of directory entries
- 196:     -	00EC' 8000    	    db 0x80, 0x00   ; Initial allocation vector for one directory block
- 197:     -	00EE' 0000    	    dw 0            ; Size of disk change check vector: zero as this is a fixed disk
- 198:     -	00F0' 0000    	    dw 0            ; Number of reserved tracks
- 199:				
- 200:				; Drive Bitmaps
- 201:     -	00F2'         	drive_a_bitmap:  ds (FD1440_BLOCKS+7) / 8
- 202:     -	014C'         	drive_b_bitmap:  ds (FD1440_BLOCKS+7) / 8
- 203:     -	01A6'         	drive_c_bitmap:  ds (HD32M_BLOCKS+7) / 8
- 204:				
- 205:				; Drive Check Vectors
- 206:     -	02A6'         	drive_a_check_vector: ds 32
- 207:     -	02C6'         	drive_b_check_vector: ds 32
+ 168:     -	00CC' E602    	    dw dirbuf       ; Directory scratchpad
+ 169:     -	00CE' E300    	    dw hd32m        ; Drive parameter block
+ 170:     -	00D0' 0000    	    dw 0            ; Disk change check vector: none as this is a fixed disk
+ 171:     -	00D2' A601    	    dw drive_c_bitmap ; Allocation bitmap
+ 172:				
+ 173:     -	05A0'         	FD1440_SIZE = 1440 ; kb
+ 174:     -	02D0'         	FD1440_BLOCKS = FD1440_SIZE / 2 ; 2kB blocks, no reserved tracks
+ 175:     -	00D4'         	fd1440k:            ; disk parameter block for a 1.44M floppy
+ 176:     -	00D4' 4800    	    dw 18*4         ; Number of CP/M sectors per track
+ 177:     -	00D6' 040F    	    db 4, 15        ; BSH/BLM for 2048-byte blocks
+ 178:     -	00D8' 00      	    db 0            ; EXM for 2048-byte allocation units and >255 blocks
+ 179:     -	00D9' CF02    	    dw FD1440_BLOCKS-1 ; DSM
+ 180:     -	00DB' 7F00    	    dw 127          ; DRM, one fewer than the number of directory entries
+ 181:     -	00DD' C000    	    db 0xc0, 0x00   ; Initial allocation vector for two directory blocks
+ 182:     -	00DF' 2000    	    dw 32           ; Size of disk change check vector: (DRM+1)/4
+ 183:     -	00E1' 0000    	    dw 0            ; Number of reserved tracks
+ 184:				
+ 185:     -	8000'         	HD32M_SIZE = 32*1024             ; kB; this is the *maximum* size
+ 186:     -	0800'         	HD32M_BLOCKS = HD32M_SIZE / 16 ; 16kB blocks, no reserved tracks
+ 187:     -	00E3'         	hd32m:
+ 188:				    ;dw 256*4        ; Number of CP/M sectors per track
+ 189:     -	00E3' 4000    	    dw 64           ; Number of CP/M sectors per track
+ 190:     -	00E5' 077F    	    db 7, 127       ; BSH/BLM for 16384-byte blocks
+ 191:     -	00E7' 07      	    db 7            ; EXM for 16384-byte allocation units and >255 blocks
+ 192:     -	00E8' FF07    	    dw HD32M_BLOCKS-1 ; DSM
+ 193:     -	00EA' FF01    	    dw 511          ; DRM, one fewer than the number of directory entries
+ 194:     -	00EC' 8000    	    db 0x80, 0x00   ; Initial allocation vector for one directory block
+ 195:     -	00EE' 0000    	    dw 0            ; Size of disk change check vector: zero as this is a fixed disk
+ 196:     -	00F0' 0000    	    dw 0            ; Number of reserved tracks
+ 197:				
+ 198:				; Drive Bitmaps
+ 199:     -	00F2'         	drive_a_bitmap:  ds (FD1440_BLOCKS+7) / 8
+ 200:     -	014C'         	drive_b_bitmap:  ds (FD1440_BLOCKS+7) / 8
+ 201:     -	01A6'         	drive_c_bitmap:  ds (HD32M_BLOCKS+7) / 8
+ 202:				
+ 203:				; Drive Check Vectors
+ 204:     -	02A6'         	drive_a_check_vector: ds 32
+ 205:     -	02C6'         	drive_b_check_vector: ds 32
+ 206:				
+ 207:     -	02E6'         	dirbuf: ds 128  ; BDOS scratch directory
  208:				
- 209:     -	02E6'         	dirbuf: ds 128  ; BDOS scratch directory
- 210:				
- 211:     -	0366' 525A3830	welcome: db "RZ80 BIOS 1.0", 10, 13, 0
+ 209:     -	0366' 525A3830	welcome: db "RZ80 BIOS 1.0", 10, 13, 0
 	              2042494F
 	              5320312E
 	              300A0D00
- 212:				
- 213:     -	0376'         	end:    
- 214:     -	0376' 0000    	        dw CBASE
- 215:     -	0378' 0000    	        dw FBASE
- 216:     -	037A' 0000    	        dw BBASE
- 217:     -	037C' A400    	        dw DPBASE
- 218:				    public sig
- 219:     -	037E' AA55    	sig:    dw  0x55aa
- 220:				
+ 210:				
+ 211:     -	0376'         	end:    
+ 212:     -	0376' 0000    	        dw CBASE
+ 213:     -	0378' 0000    	        dw FBASE
+ 214:     -	037A' 0000    	        dw BBASE
+ 215:     -	037C' A400    	        dw DPBASE
+ 216:				    public sig
+ 217:     -	037E' AA55    	sig:    dw  0x55aa
+ 218:				
 
 
 

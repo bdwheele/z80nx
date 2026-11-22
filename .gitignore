@@ -4,6 +4,8 @@ tools/zmac/zmac
 tools/zmac/*.o
 tools/ld80/ld80
 tools/ld80/*.o
+rom_src/bios/bios.lst
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
