@@ -1,3 +1,10 @@
+# various binaries
+tools/zmac/doc
+tools/zmac/zmac
+tools/zmac/*.o
+tools/ld80/ld80
+tools/ld80/*.o
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
