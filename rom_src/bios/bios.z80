@@ -206,7 +206,7 @@ drive_b_check_vector: ds 32
 
 dirbuf: ds 128  ; BDOS scratch directory
 
-welcome: db "RZ80 BIOS 1.0", 10, 13, 0
+welcome: db "Z80NX BIOS 1.0", 10, 13, 0
 
 end:    
         dw CBASE

@@ -4,9 +4,9 @@ all: system.rom
 
 system.rom: bios zcpr1 zsdos
 	ld80 -m -O ihex -o system.hex -s /dev/tty \
-		-P 0xe680 zcpr1/zcpr.rel \
-		-P 0xee70 zsdos/zsdos.rel \
-		-P 0xfc70 bios/bios.rel
+		-P 0xe692 zcpr1/zcpr.rel \
+		-P 0xee7e zsdos/zsdos.rel \
+		-P 0xfc7e bios/bios.rel
 	objcopy -I ihex -O binary system.hex system.rom
 
 bios:

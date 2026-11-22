@@ -269,18 +269,19 @@
  206:				
  207:     -	02E6'         	dirbuf: ds 128  ; BDOS scratch directory
  208:				
- 209:     -	0366' 525A3830	welcome: db "RZ80 BIOS 1.0", 10, 13, 0
-	              2042494F
-	              5320312E
-	              300A0D00
+ 209:     -	0366' 5A38304E	welcome: db "Z80NX BIOS 1.0", 10, 13, 0
+	              58204249
+	              4F532031
+	              2E300A0D
+	              00
  210:				
- 211:     -	0376'         	end:    
- 212:     -	0376' 0000    	        dw CBASE
- 213:     -	0378' 0000    	        dw FBASE
- 214:     -	037A' 0000    	        dw BBASE
- 215:     -	037C' A400    	        dw DPBASE
+ 211:     -	0377'         	end:    
+ 212:     -	0377' 0000    	        dw CBASE
+ 213:     -	0379' 0000    	        dw FBASE
+ 214:     -	037B' 0000    	        dw BBASE
+ 215:     -	037D' A400    	        dw DPBASE
  216:				    public sig
- 217:     -	037E' AA55    	sig:    dw  0x55aa
+ 217:     -	037F' AA55    	sig:    dw  0x55aa
  218:				
 
 
@@ -290,7 +291,7 @@ Statistics:
      4	passes
      0	jr promotions
     42	symbols
-   268	bytes
+   269	bytes
 
     15	macro calls
     34	macro bytes
@@ -336,9 +337,9 @@ drive_b_check_vector  2C6'     710
 drive_b_dph     B4'       180
 drive_c_bitmap   1A6'     422
 drive_c_dph     C4'       196
-end              376'     886
+end              377'     887
 fd1440k         D4'       212
 hd32m           E3'       227
 hello           40'       64
-sig              37E'     894 (public)
+sig              37F'     895 (public)
 welcome          366'     870
